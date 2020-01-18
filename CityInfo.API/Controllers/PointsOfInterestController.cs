@@ -23,7 +23,6 @@ namespace CityInfo.API.Controllers
         {
             try
             {
-                throw new Exception("Exception test");
                 var city = CitiesDataStore.Current.Cities.Find(c => c.Id == cityId);
                 if (city == null)
                 {
