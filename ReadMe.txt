@@ -1,0 +1,3 @@
+Add-Migration CityInfoDBInitialMigration
+Update-Database
+Add-Migration CityInfoDBAddPOIDescription
