@@ -1,4 +1,5 @@
-﻿using CityInfo.API.Entities;
+﻿using AutoMapper;
+using CityInfo.API.Entities;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +39,7 @@ namespace CityInfo.API
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));
             //services.AddMvc();
             services.AddMvc()
                 .AddMvcOptions(o => o.OutputFormatters.Add(

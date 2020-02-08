@@ -1,4 +1,5 @@
-﻿using CityInfo.API.Models;
+﻿using AutoMapper;
+using CityInfo.API.Models;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -10,10 +11,11 @@ namespace CityInfo.API.Controllers
     public class CitiesController : Controller
     {
         private ICityInfoRepository _cityInfoRepository;
-
-        public CitiesController(ICityInfoRepository cityInfoRepository)
+        private readonly IMapper _mapper;
+        public CitiesController(ICityInfoRepository cityInfoRepository, IMapper mapper)
         {
             _cityInfoRepository = cityInfoRepository;
+            _mapper = mapper;
         }
 
         //[HttpGet("api/cities")]
@@ -53,16 +55,17 @@ namespace CityInfo.API.Controllers
             //return Ok(CitiesDataStore.Current.Cities);
 
             var cityEntities = _cityInfoRepository.GetCities();
-            var results = new List<CityWithoutPointsOfInterestDto>();
-            foreach (var cityEntity in cityEntities)
-            {
-                results.Add(new CityWithoutPointsOfInterestDto()
-                {
-                    Id = cityEntity.Id,
-                    Description = cityEntity.Description,
-                    Name = cityEntity.Name
-                });
-            }
+            //var results = new List<CityWithoutPointsOfInterestDto>();
+            //foreach (var cityEntity in cityEntities)
+            //{
+            //    results.Add(new CityWithoutPointsOfInterestDto()
+            //    {
+            //        Id = cityEntity.Id,
+            //        Description = cityEntity.Description,
+            //        Name = cityEntity.Name
+            //    });
+            //}
+            var results = _mapper.Map<IEnumerable<CityWithoutPointsOfInterestDto>>(cityEntities);
             return Ok(results);
         }
 
@@ -87,33 +90,34 @@ namespace CityInfo.API.Controllers
             }
             if (incluedPointsOfInterest)
             {
-                var cityResult = new CityDto()
-                {
-                    Id = city.Id,
-                    Name = city.Name,
-                    Description = city.Description
-                };
+                //var cityResult = new CityDto()
+                //{
+                //    Id = city.Id,
+                //    Name = city.Name,
+                //    Description = city.Description
+                //};
 
-                foreach (var poi in city.PointsOfInterest)
-                {
-                    cityResult.PointsOfInterest.Add(
-                        new PointOfInterestDto()
-                        {
-                            Id = poi.Id,
-                            Name = poi.Name,
-                            Description = poi.Description
-                        });
-                }
+                //foreach (var poi in city.PointsOfInterest)
+                //{
+                //    cityResult.PointsOfInterest.Add(
+                //        new PointOfInterestDto()
+                //        {
+                //            Id = poi.Id,
+                //            Name = poi.Name,
+                //            Description = poi.Description
+                //        });
+                //}
+                var cityResult = _mapper.Map<CityDto>(city);
                 return Ok(cityResult);
             }
-            var cityWithoutPointsOfInterestResult =
-                new CityWithoutPointsOfInterestDto()
-                {
-                    Id = city.Id,
-                    Name = city.Name,
-                    Description = city.Description
-                };
-
+            //var cityWithoutPointsOfInterestResult =
+            //    new CityWithoutPointsOfInterestDto()
+            //    {
+            //        Id = city.Id,
+            //        Name = city.Name,
+            //        Description = city.Description
+            //    };
+            var cityWithoutPointsOfInterestResult = _mapper.Map<CityWithoutPointsOfInterestDto>(city);
             return Ok(cityWithoutPointsOfInterestResult);
         }
     }
