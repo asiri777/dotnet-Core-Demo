@@ -13,6 +13,7 @@ namespace CityInfo.API.AutoMapperProfiles
         public PointOfInterestProfile()
         {
             CreateMap<PointOfInterest, PointOfInterestDto>();
+            CreateMap<PointOfInterestForCreationDto, PointOfInterest>();
         }
     }
 }
