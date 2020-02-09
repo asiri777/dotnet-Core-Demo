@@ -14,8 +14,8 @@ namespace CityInfo.API.AutoMapperProfiles
         {
             CreateMap<PointOfInterest, PointOfInterestDto>();
             CreateMap<PointOfInterestForCreationDto, PointOfInterest>();
-            CreateMap<PointOfInterestForUpdateDto, PointOfInterest>();
-            CreateMap<PointOfInterest, PointOfInterestForUpdateDto>();
+            CreateMap<PointOfInterestForUpdateDto, PointOfInterest>()
+                .ReverseMap();
         }
     }
 }

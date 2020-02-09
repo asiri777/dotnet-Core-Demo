@@ -10,16 +10,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using NLog.Extensions.Logging;
+using System;
 
 namespace CityInfo.API
 {
     public class Startup
     {
-        public static IConfiguration Configuration { get; private set; }
+        //public static IConfiguration Configuration { get; private set; }
+        private readonly IConfiguration _configuration;
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration ??
+                throw new ArgumentNullException(nameof(configuration));
         }
 
 
@@ -39,11 +42,11 @@ namespace CityInfo.API
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(Startup));
-            //services.AddMvc();
             services.AddMvc()
-                .AddMvcOptions(o => o.OutputFormatters.Add(
-                        new XmlDataContractSerializerOutputFormatter()));
+                .AddMvcOptions(o =>
+                {
+                    o.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
+                });
             //services.AddMvc()
             //    .AddJsonOptions(o =>
             //    {
@@ -63,10 +66,15 @@ namespace CityInfo.API
 #endif
             //var connectionString = @"Server=(localdb)\mssqllocaldb;Database=CityInfoDB;AttachDbFilename=.\CityInfoDB.mdf;Trusted_Connection=True;";
             //var connectionString = @"Server=(localdb)\mssqllocaldb;Database=CityInfoDB;Trusted_Connection=True;";
-            var connectionString = Startup.Configuration["connectionStrings:cityInfoDBConnectionString"];
-            services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(connectionString));
+            var connectionString = _configuration["connectionStrings:cityInfoDBConnectionString"];
+            services.AddDbContext<CityInfoContext>(o =>
+            {
+                o.UseSqlServer(connectionString);
+            });
 
             services.AddScoped<ICityInfoRepository, CityInfoRepository>();
+            //services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
